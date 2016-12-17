@@ -1,0 +1,17 @@
+{
+  "falseclaim" : [
+    "This is a claim for scout"
+  ],
+  "attack" : [
+    "This is an attack for scout"
+  ],
+  "praise" : [
+    "This is a praise for scout"
+  ],
+  "narcissism" : [
+    "This is a narcissistic comment for scout"
+  ],
+  "transition" : [
+    "This is a transition related comment for scout"
+  ]
+}

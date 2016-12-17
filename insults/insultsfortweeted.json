@@ -1,0 +1,17 @@
+{
+  "falseclaim" : [
+    "This is a FOLC claim for tweeted"
+  ],
+  "attack" : [
+    "This is an FOLC attack for tweeted"
+  ],
+  "praise" : [
+    "This is a FOLC praise for tweeted"
+  ],
+  "narcissism" : [
+    "This is a FOLC narcissistic comment for tweeted"
+  ],
+  "transition" : [
+    "This is a transition FOLC related comment for tweeted"
+  ]
+}

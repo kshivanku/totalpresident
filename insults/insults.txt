@@ -1,0 +1,15 @@
+Types of statements:
+- Outrageous, unsubstantiated claims
+- Personal attacks
+- Over the top praises
+- Narcissism
+- Something related to transition
+
+Template for statements:
+- <NN> to add name
+- <SN> to add screen_name
+- <DES> to add description
+- <FOLC> to add followers_count
+- <FAVC> to add favorites_count
+- <STATC> to add statuses_count
+- <IMG> to add profile_image_url

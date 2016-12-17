@@ -1,0 +1,17 @@
+{
+  "falseclaim" : [
+    "This SN is a claim for SN follow"
+  ],
+  "attack" : [
+    "This SN is an attack for SN follow"
+  ],
+  "praise" : [
+    "This SN is a praise for SN follow"
+  ],
+  "narcissism" : [
+    "This SN is a narcissistic comment for SN follow"
+  ],
+  "transition" : [
+    "This SN is a transition related comment SN for follow"
+  ]
+}
