@@ -6,10 +6,14 @@ Types of statements:
 - Something related to transition
 
 Template for statements:
-- <NN> to add name
-- <SN> to add screen_name
-- <DES> to add description
-- <FOLC> to add followers_count
-- <FAVC> to add favorites_count
-- <STATC> to add statuses_count
-- <IMG> to add profile_image_url
+- _GNICK_ to add good nickname
+- _BNICK_ to add bad nickname
+- _NN_ to add name
+- _SN_ to add screen_name
+- _DES_ to add description
+- _FOLC_ to add followers_count
+- _FAVC_ to add favorites_count
+- _STATC_ to add statuses_count
+- _IMG_ to add profile_image_url
+- _AEND_ to add angry ending
+- _HEND_ to add happy ending

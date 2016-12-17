@@ -1,13 +1,9 @@
-// THIS WILL SOON BE IN A SEPARATE FILE
-// var nick_name = ["LOSER","FAILING","LYING","CROOKED","LOW-ENERGY","LITTLE","FRAUD","TOTALLY BIASED", "NASTY"];
-// var tweet_ending = ["SAD!", "DISGUSTING!", "MISTAKE!", "WRONG!","NO MORE!", "TERRIBLE!", "SHAME!", "APOLOGIZE!" , "EMBARRASING!", "CORRUPT!", "DISASTER!"];
-
 var insultType = ["falseclaim", "attack", "praise", "narcissism", "transition"];
 var insults_data;
 var insults;
 var rndInsultsIndex;
 var selectedInsult;
-var insultVariables = ["NN", "SN", "DES", "FOLC", "FAVC", "STATC", "IMG"];
+var insultVariables = ["_GNICK_", "_BNICK_", "_NN_", "_SN_", "_DES_", "_FOLC_", "_FAVC_", "_STATC_", "_IMG_", "_AEND_", "_HEND_"];
 
 // DATA ABOUT OTHER PEOPLE TO BE SAVED
 var name;
@@ -55,14 +51,15 @@ function scout(){
         "screen_name": eventMsg.statuses[0].user.screen_name,
         "description": eventMsg.statuses[0].user.description,
         "followers_count": eventMsg.statuses[0].user.followers_count,
+        "favourites_count": eventMsg.statuses[0].user.favourites_count,
         "statuses_count": eventMsg.statuses[0].user.statuses_count,
         "profile_image_url": eventMsg.statuses[0].user.profile_image_url
       }
-
-      insult(eventMsgStored, "scout");
-      if(!checkmember(eventMsgStored)){
-        addnewmember(eventMsgStored);
+      var target_member = checkmember(eventMsgStored);
+      if(!target_member){
+        target_member = addnewmember(eventMsgStored);
       }
+      insult(target_member, "scout");
     }
     else{
       console.log("Same tweet found");
@@ -85,15 +82,15 @@ function followed(eventMsg){
     "screen_name": eventMsg.source.screen_name,
     "description": eventMsg.source.description,
     "followers_count": eventMsg.source.followers_count,
+    "favorites_count": eventMsg.source.favorites_count,
     "statuses_count": eventMsg.source.statuses_count,
     "profile_image_url": eventMsg.source.profile_image_url
   }
-
-  insult(eventMsgStored, "followed");
-
-  if(!checkmember(eventMsgStored)){
-    addnewmember(eventMsgStored);
+  var target_member = checkmember(eventMsgStored);
+  if(!target_member){
+    target_member = addnewmember(eventMsgStored);
   }
+  insult(target_member, "followed");
 }
 
 //LISTENING FOR TWEET EVENT
@@ -109,15 +106,16 @@ function tweeted(eventMsg){
       "screen_name": eventMsg.user.screen_name,
       "description": eventMsg.user.description,
       "followers_count": eventMsg.user.followers_count,
+      "favorites_count": eventMsg.user.favorites_count,
       // "statuses_count": eventMsg.user.statuses_count,
       "profile_image_url": eventMsg.user.profile_image_url
     }
 
-    insult(eventMsgStored, "tweeted");
-
-    if(!checkmember(eventMsgStored)){
-      addnewmember(eventMsgStored);
+    var target_member = checkmember(eventMsgStored);
+    if(!target_member){
+      target_member = addnewmember(eventMsgStored);
     }
+    insult(target_member, "tweeted");
   }
 }
 
@@ -131,7 +129,7 @@ function checkmember(eventMsgStored){
       if(!network[i].statuses_count){
         network[i].statuses_count = eventMsgStored.statuses_count;
       }
-      return true;
+      return network[i];
     }
   }
   return false;
@@ -147,6 +145,8 @@ function addnewmember(eventMsgStored){
     member.statuses_count = eventMsgStored.statuses_count;
   }
   member.profile_image_url = eventMsgStored.profile_image_url;
+  member.goodnickname = getnickname("good");
+  member.badnickname = getnickname("bad");
 
   var network_data = fs.readFileSync("network.json");
   var network = JSON.parse(network_data);
@@ -156,6 +156,7 @@ function addnewmember(eventMsgStored){
   fs.writeFile("network.json", data, function(){
     console.log("New member added");
   });
+  return member;
 }
 function Member(){
   this.name;
@@ -165,10 +166,25 @@ function Member(){
   this.favourites_count;
   this.statuses_count;
   this.profile_image_url;
+  this.goodnickname;
+  this.badnickname;
+}
+function getnickname(nicknametype){
+  var namelist_data = fs.readFileSync("insults/nicknames.json");
+  var namelist = JSON.parse(namelist_data);
+  var index;
+  if(nicknametype == "good"){
+    index = Math.floor(Math.random() * namelist.goodnicknames.length);
+    return namelist.goodnicknames[index];
+  }
+  else if(nicknametype == "bad"){
+    index = Math.floor(Math.random() * namelist.badnicknames.length);
+    return namelist.badnicknames[index];
+  }
 }
 
 //CHOOSING APPROPRIATE INSULT AND POSTING A TWEET
-function insult(eventMsgStored, eventname){
+function insult(target_member, eventname){
   var chosenInsultType = chooseInsultType();
 
   //CHOOSING AN INSULT STATEMENT
@@ -190,20 +206,22 @@ function insult(eventMsgStored, eventname){
   selectedInsult = insults[chosenInsultType][rndInsultsIndex];
 
   //CONVERTING INSULT STATEMENT INTO A TWEET AND POSTING
-  var readyTweet = prepareTweet(selectedInsult, eventMsgStored);
+  var readyTweet = prepareTweet(selectedInsult, target_member);
   postTweet(readyTweet);
 }
 
 //CHOOSING THE TYPE OF INSULT
 function chooseInsultType(){
+  console.log("Came here to choose insults");
   var insultChoice = Math.floor(Math.random() * insultType.length);
+  console.log("Insult chosen: " + insultType[insultChoice]);
   return insultType[insultChoice];
 }
 
 //CONVERTING INSULT STATEMENT INTO A TWEET BY ADDING VARIABLES IN THE APPROPRIATE PLACES AND TURNING IT INTO OBJECT
-function prepareTweet(selectedInsult, eventMsgStored){
+function prepareTweet(selectedInsult, target_member){
   for(i = 0 ; i < insultVariables.length ; i++){
-    selectedInsult = editInsult(selectedInsult, insultVariables[i], eventMsgStored);
+    selectedInsult = editInsult(selectedInsult, insultVariables[i], target_member);
   }
   var readyTweet = {
     "status" : selectedInsult
@@ -211,27 +229,45 @@ function prepareTweet(selectedInsult, eventMsgStored){
   return readyTweet;
 }
 
-function editInsult(selectedInsult, insultVariable, eventMsgStored){
-  if(insultVariable == "NN"){
-    selectedInsult = selectedInsult.replace(/NN/g, eventMsgStored.name);
+function editInsult(selectedInsult, insultVariable, target_member){
+  if(insultVariable == "_NN_"){
+    selectedInsult = selectedInsult.replace(/_NN_/g, target_member.name);
   }
-  if(insultVariable == "SN"){
-    selectedInsult = selectedInsult.replace(/SN/g, "@" + eventMsgStored.screen_name);
+  if(insultVariable == "_SN_"){
+    selectedInsult = selectedInsult.replace(/_SN_/g, "@" + target_member.screen_name);
   }
-  if(insultVariable == "DES"){
-    selectedInsult = selectedInsult.replace(/DES/g, eventMsgStored.description);
+  if(insultVariable == "_DES_"){
+    selectedInsult = selectedInsult.replace(/_DES_/g, target_member.description);
   }
-  if(insultVariable == "FOLC"){
-    selectedInsult = selectedInsult.replace(/FOLC/g, eventMsgStored.followers_count);
+  if(insultVariable == "_FOLC_"){
+    selectedInsult = selectedInsult.replace(/_FOLC_/g, target_member.followers_count);
   }
-  if(insultVariable == "FAVC"){
-    selectedInsult = selectedInsult.replace(/FAVC/g, eventMsgStored.favorites_count);
+  if(insultVariable == "_FAVC_"){
+    selectedInsult = selectedInsult.replace(/_FAVC_/g, target_member.favorites_count);
   }
-  if(insultVariable == "STATC"){
-    selectedInsult = selectedInsult.replace(/STATC/g, eventMsgStored.statuses_count);
+  if(insultVariable == "_STATC_" && target_member.statuses_count){
+    selectedInsult = selectedInsult.replace(/_STATC_/g, target_member.statuses_count);
   }
-  if(insultVariable == "IMG"){
-    selectedInsult = selectedInsult.replace(/IMG/g, eventMsgStored.profile_image_url);
+  if(insultVariable == "_IMG_"){
+    selectedInsult = selectedInsult.replace(/_IMG_/g, target_member.profile_image_url);
+  }
+  if(insultVariable == "_GNICK_"){
+    selectedInsult = selectedInsult.replace(/_GNICK_/g, target_member.goodnickname);
+  }
+  if(insultVariable == "_BNICK_"){
+    selectedInsult = selectedInsult.replace(/_BNICK_/g, target_member.badnickname);
+  }
+  if(insultVariable == "_AEND_"){
+    var ending_data = fs.readFileSync("insults/endings.json");
+    var ending = JSON.parse(ending_data);
+    var end_index = Math.floor(Math.random() * ending.angry.length);
+    selectedInsult = selectedInsult.replace(/_AEND_/g, ending.angry[end_index]);
+  }
+  if(insultVariable == "_HEND_"){
+    var ending_data = fs.readFileSync("insults/endings.json");
+    var ending = JSON.parse(ending_data);
+    var end_index = Math.floor(Math.random() * ending.happy.length);
+    selectedInsult = selectedInsult.replace(/_HEND_/g, ending.happy[end_index]);
   }
   return selectedInsult;
 }

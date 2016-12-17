@@ -1,17 +1,17 @@
 {
   "falseclaim" : [
-    "This SN is a claim for SN follow"
+    "_BNICK_ _SN_ followed me today and begging me to follow. _AEND_"
   ],
   "attack" : [
-    "This SN is an attack for SN follow"
+    "Only _FOLC_ followers for _BNICK_ _SN_. Should quit twitter. _AEND_"
   ],
   "praise" : [
-    "This SN is a praise for SN follow"
+    "_GNICK_ _SN_ followed me today. _HEND_"
   ],
   "narcissism" : [
-    "This SN is a narcissistic comment for SN follow"
+    "I think even _BNICK_ _SN_ wants to be like me! Follows me! _AEND_"
   ],
   "transition" : [
-    "This SN is a transition related comment SN for follow"
+    "Thinking of making _GNICK_ _SN_ secretary of hearts. He has _FAVC_ favorited tweets. _HEND_"
   ]
 }
