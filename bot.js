@@ -37,7 +37,7 @@ var T = new Twit(config);
 //REGULAR TWEETING
 setInterval(scout, 10000);
 function scout(){
-  T.get('search/tweets', { q: 'ITP_NYU', count: 1 }, function(err, eventMsg, response) {
+  T.get('search/tweets', { q: 'Trump', count: 1 }, function(err, eventMsg, response) {
     if (err) throw err;
 
     if( prevmsg != eventMsg.statuses[0].text){
