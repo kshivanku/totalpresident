@@ -11,7 +11,7 @@ var screen_name;
 var description;
 var messagetext;
 var followers_count;
-var favorites_count;
+var favourites_count;
 var statuses_count;
 var profile_image_url;
 
@@ -33,7 +33,7 @@ var config = require('./config');
 var T = new Twit(config);
 
 //REGULAR TWEETING
-// setInterval(scout, 10000);
+setInterval(scout, 10000);
 function scout(){
   T.get('search/tweets', { q: 'ITP_NYU', count: 1 }, function(err, eventMsg, response) {
     if (err) throw err;
@@ -82,7 +82,7 @@ function followed(eventMsg){
     "screen_name": eventMsg.source.screen_name,
     "description": eventMsg.source.description,
     "followers_count": eventMsg.source.followers_count,
-    "favorites_count": eventMsg.source.favorites_count,
+    "favourites_count": eventMsg.source.favourites_count,
     "statuses_count": eventMsg.source.statuses_count,
     "profile_image_url": eventMsg.source.profile_image_url
   }
@@ -106,11 +106,11 @@ function tweeted(eventMsg){
       "screen_name": eventMsg.user.screen_name,
       "description": eventMsg.user.description,
       "followers_count": eventMsg.user.followers_count,
-      "favorites_count": eventMsg.user.favorites_count,
+      "favourites_count": eventMsg.user.favourites_count,
       // "statuses_count": eventMsg.user.statuses_count,
       "profile_image_url": eventMsg.user.profile_image_url
     }
-
+    console.log("Fav count in eventMsgStored" + eventMsgStored.favourites_count);
     var target_member = checkmember(eventMsgStored);
     if(!target_member){
       target_member = addnewmember(eventMsgStored);
@@ -141,6 +141,7 @@ function addnewmember(eventMsgStored){
   member.description = eventMsgStored.description;
   member.followers_count = eventMsgStored.followers_count;
   member.favourites_count = eventMsgStored.favourites_count;
+  console.log("Fav count in member" + member.favourites_count);
   if(eventMsgStored.statuses_count){
     member.statuses_count = eventMsgStored.statuses_count;
   }
@@ -199,7 +200,7 @@ function insult(target_member, eventname){
     rndInsultsIndex = Math.floor(Math.random() * insults[chosenInsultType].length);
   }
   if(eventname == "tweeted"){
-    insults_data = fs.readFileSync("insults/insultsfortweeted.json");
+    insults_data = fs.readFileSync("insults/insultsgeneral.json");
     insults = JSON.parse(insults_data);
     rndInsultsIndex = Math.floor(Math.random() * insults[chosenInsultType].length);
   }
@@ -243,7 +244,7 @@ function editInsult(selectedInsult, insultVariable, target_member){
     selectedInsult = selectedInsult.replace(/_FOLC_/g, target_member.followers_count);
   }
   if(insultVariable == "_FAVC_"){
-    selectedInsult = selectedInsult.replace(/_FAVC_/g, target_member.favorites_count);
+    selectedInsult = selectedInsult.replace(/_FAVC_/g, target_member.favourites_count);
   }
   if(insultVariable == "_STATC_" && target_member.statuses_count){
     selectedInsult = selectedInsult.replace(/_STATC_/g, target_member.statuses_count);

@@ -35,7 +35,17 @@
     "GOOFBALL",
     "SLEEPY",
     "CLOWN",
-    "PATHETIC"
+    "PATHETIC",
+    "FRAUD",
+    "WACKO",
+    "TIRED",
+    "LIGHTWEIGHT",
+    "WILD",
+    "INSANE",
+    "COWARD",
+    "PERV",
+    "CLUELESS",
+    "INCOMPETENT"
   ],
   "goodnicknames": [
     "GREAT",
@@ -49,6 +59,8 @@
     "GOOD MAN",
     "SUCCESSFUL",
     "MUCH RESPECTED",
-    "GREAT BUSINESSMAN"
+    "GREAT BUSINESSMAN",
+    "GREAT GOOD",
+    "AMAZING"
   ]
 }
