@@ -17,6 +17,8 @@ var profile_image_url;
 
 // OTHER VARIABLES
 var prevmsg;
+var pre_target;
+var current_target;
 
 //STARTING THE SERVER
 var express = require('express');
@@ -65,6 +67,24 @@ function scout(){
       console.log("Same tweet found");
     }
   })
+}
+
+//TWEETING SOMEONE IN NETWORK EVERY 15 MINS
+setInterval(tweetgeneral, 900000);
+function tweetgeneral(){
+  //MAKING SURE THE SAME PERSON DOES NOT GET TWEETED BACK TO BACK
+  while(current_target == pre_target){
+    current_target = selectRandomMember();
+  }
+  pre_target = current_target;
+  insult(current_target, "tweeted");
+}
+
+function selectRandomMember(){
+  var network_data = fs.readFileSync("network.json");
+  network = JSON.parse(network_data);
+  var index = Math.floor(Math.random() * network.length);
+  return network[index];
 }
 
 //SETTING UP STREAM
@@ -213,9 +233,7 @@ function insult(target_member, eventname){
 
 //CHOOSING THE TYPE OF INSULT
 function chooseInsultType(){
-  console.log("Came here to choose insults");
   var insultChoice = Math.floor(Math.random() * insultType.length);
-  console.log("Insult chosen: " + insultType[insultChoice]);
   return insultType[insultChoice];
 }
 
