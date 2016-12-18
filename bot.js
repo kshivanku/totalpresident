@@ -71,7 +71,7 @@ function scout(){
 }
 
 //TWEETING SOMEONE IN NETWORK EVERY 15 MINS
-setInterval(tweetgeneral, 305000);
+// setInterval(tweetgeneral, 905000);
 function tweetgeneral(){
   //MAKING SURE THE SAME PERSON DOES NOT GET TWEETED BACK TO BACK
   console.log("Making a general tweet to network");
