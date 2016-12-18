@@ -210,7 +210,7 @@ function insult(target_member, eventname){
 
   //CHOOSING AN INSULT STATEMENT
   if(eventname == "scout"){
-    insults_data = fs.readFileSync("insults/insultsforscout.json");
+    insults_data = fs.readFileSync("insults/insultsgeneral.json");
     insults = JSON.parse(insults_data);
     rndInsultsIndex = Math.floor(Math.random() * insults[chosenInsultType].length);
   }
