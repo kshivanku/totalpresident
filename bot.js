@@ -37,7 +37,7 @@ var T = new Twit(config);
 //REGULAR TWEETING
 setInterval(scout, 10000);
 function scout(){
-  T.get('search/tweets', { q: 'Trump', count: 1 }, function(err, eventMsg, response) {
+  T.get('search/tweets', { q: 'ITP_NYU', count: 1 }, function(err, eventMsg, response) {
     if (err) throw err;
 
     if( prevmsg != eventMsg.statuses[0].text){
@@ -70,7 +70,7 @@ function scout(){
 }
 
 //TWEETING SOMEONE IN NETWORK EVERY 15 MINS
-setInterval(tweetgeneral, 900000);
+setInterval(tweetgeneral, 905000);
 function tweetgeneral(){
   //MAKING SURE THE SAME PERSON DOES NOT GET TWEETED BACK TO BACK
   while(current_target == pre_target){
@@ -210,7 +210,7 @@ function insult(target_member, eventname){
 
   //CHOOSING AN INSULT STATEMENT
   if(eventname == "scout"){
-    insults_data = fs.readFileSync("insults/insultsgeneral.json");
+    insults_data = fs.readFileSync("insults/insultsforscout.json");
     insults = JSON.parse(insults_data);
     rndInsultsIndex = Math.floor(Math.random() * insults[chosenInsultType].length);
   }
