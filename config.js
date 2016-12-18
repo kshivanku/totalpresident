@@ -1,7 +1,7 @@
 module.exports = {
-  consumer_key:         'wLMnqcmihA4NcoIcWqRjMhq0A',
-  consumer_secret:      'xa77BRFXSjJZB4wckUiuyXYTge3V4yfkjUQDYauWN42y3MGaMl',
-  access_token:         '805519834012327936-VokLSDDJmA1YPzrJQ1g3iRpJfowylLm',
-  access_token_secret:  'gWkWVYyUwSTlVVCTWwlH9B6O6YnHFQvduYIBg020AWA5q',
+  consumer_key:         'hIbFSYSF19aZ8LfpHpzxOPal1',
+  consumer_secret:      'NSz9cHmlLdQPsgd3NIEHMomWeccSYyKz4dOqq1mXgAfBCvxiQ0',
+  access_token:         '810538589251653632-DT7L539IBIVMZtxWRLLhPJKh75rqyTw',
+  access_token_secret:  '6BzGa0C06fMO3SkQaClGUlvfhYaXpVawsVGqAkI4j1CJH',
   timeout_ms:           60*1000,  // optional HTTP request timeout to apply to all requests.
 }

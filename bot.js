@@ -39,40 +39,42 @@ setInterval(scout, 10000);
 function scout(){
   T.get('search/tweets', { q: 'ITP_NYU', count: 1 }, function(err, eventMsg, response) {
     if (err) throw err;
+    if(eventMsg){
+      if( prevmsg != eventMsg.statuses[0].text){
+        console.log("New tweet found");
+        prevmsg = eventMsg.statuses[0].text;
 
-    if( prevmsg != eventMsg.statuses[0].text){
-      console.log("New tweet found");
-      prevmsg = eventMsg.statuses[0].text;
+        // WRITING TO A FILE
+        var incomingdata = JSON.stringify(eventMsg, null, 2);
+        fs.writeFile("grabbedtweets2.json", incomingdata, function(){});
 
-      // WRITING TO A FILE
-      var incomingdata = JSON.stringify(eventMsg, null, 2);
-      fs.writeFile("grabbedtweets2.json", incomingdata, function(){});
-
-      var eventMsgStored = {
-        "name" : eventMsg.statuses[0].user.name,
-        "screen_name": eventMsg.statuses[0].user.screen_name,
-        "description": eventMsg.statuses[0].user.description,
-        "followers_count": eventMsg.statuses[0].user.followers_count,
-        "favourites_count": eventMsg.statuses[0].user.favourites_count,
-        "statuses_count": eventMsg.statuses[0].user.statuses_count,
-        "profile_image_url": eventMsg.statuses[0].user.profile_image_url
+        var eventMsgStored = {
+          "name" : eventMsg.statuses[0].user.name,
+          "screen_name": eventMsg.statuses[0].user.screen_name,
+          "description": eventMsg.statuses[0].user.description,
+          "followers_count": eventMsg.statuses[0].user.followers_count,
+          "favourites_count": eventMsg.statuses[0].user.favourites_count,
+          "statuses_count": eventMsg.statuses[0].user.statuses_count,
+          "profile_image_url": eventMsg.statuses[0].user.profile_image_url
+        }
+        var target_member = checkmember(eventMsgStored);
+        if(!target_member){
+          target_member = addnewmember(eventMsgStored);
+        }
+        insult(target_member, "scout");
       }
-      var target_member = checkmember(eventMsgStored);
-      if(!target_member){
-        target_member = addnewmember(eventMsgStored);
+      else{
+        console.log("Same tweet found");
       }
-      insult(target_member, "scout");
-    }
-    else{
-      console.log("Same tweet found");
     }
   })
 }
 
 //TWEETING SOMEONE IN NETWORK EVERY 15 MINS
-setInterval(tweetgeneral, 905000);
+setInterval(tweetgeneral, 305000);
 function tweetgeneral(){
   //MAKING SURE THE SAME PERSON DOES NOT GET TWEETED BACK TO BACK
+  console.log("Making a general tweet to network");
   while(current_target == pre_target){
     current_target = selectRandomMember();
   }
@@ -84,6 +86,7 @@ function selectRandomMember(){
   var network_data = fs.readFileSync("network.json");
   network = JSON.parse(network_data);
   var index = Math.floor(Math.random() * network.length);
+  console.log("Randomly selected member is: " + network[index]);
   return network[index];
 }
 
@@ -116,7 +119,7 @@ function followed(eventMsg){
 //LISTENING FOR TWEET EVENT
 stream.on('tweet', tweeted);
 function tweeted(eventMsg){
-  if(eventMsg.user.screen_name != "realdonal"){
+  if(eventMsg.user.screen_name != "donalreal"){
     console.log("Tweeted event triggered");
     var incomingdata = JSON.stringify(eventMsg, null, 2);
     fs.writeFile("tweeteddata.json", incomingdata);
@@ -149,6 +152,7 @@ function checkmember(eventMsgStored){
       if(!network[i].statuses_count){
         network[i].statuses_count = eventMsgStored.statuses_count;
       }
+      console.log("member already exists: " + network[i]);
       return network[i];
     }
   }
@@ -206,8 +210,10 @@ function getnickname(nicknametype){
 
 //CHOOSING APPROPRIATE INSULT AND POSTING A TWEET
 function insult(target_member, eventname){
-  var chosenInsultType = chooseInsultType();
+  console.log("Reay to find the right insult");
 
+  var chosenInsultType = chooseInsultType();
+  console.log("Chosen insult type: " + chosenInsultType);
   //CHOOSING AN INSULT STATEMENT
   if(eventname == "scout"){
     insults_data = fs.readFileSync("insults/insultsforscout.json");
@@ -225,10 +231,17 @@ function insult(target_member, eventname){
     rndInsultsIndex = Math.floor(Math.random() * insults[chosenInsultType].length);
   }
   selectedInsult = insults[chosenInsultType][rndInsultsIndex];
-
+  console.log("Insult chosen: " + selectedInsult);
   //CONVERTING INSULT STATEMENT INTO A TWEET AND POSTING
   var readyTweet = prepareTweet(selectedInsult, target_member);
-  postTweet(readyTweet);
+  console.log("Ready Tweet: " + readyTweet.status);
+  if(readyTweet.status.length > 140) {
+    console.log("More than 140 characters");
+    insult(target_member, eventname);
+  }
+  else{
+    postTweet(readyTweet);
+  }
 }
 
 //CHOOSING THE TYPE OF INSULT
@@ -294,5 +307,7 @@ function editInsult(selectedInsult, insultVariable, target_member){
 //POSTING THE TWEET
 function postTweet(readyTweet){
   console.log("Tweet Posted!");
-  T.post('statuses/update', readyTweet, function(err, data, response){});
+  T.post('statuses/update', readyTweet, function(err, data, response){
+    if (err) throw err
+  });
 }
