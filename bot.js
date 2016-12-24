@@ -35,7 +35,7 @@ var config = require('./config');
 var T = new Twit(config);
 
 //REGULAR TWEETING
-setInterval(scout, 10000);
+// setInterval(scout, 10000);
 function scout(){
   T.get('search/tweets', { q: 'ITP_NYU', count: 1 }, function(err, eventMsg, response) {
     if (err) throw err;
